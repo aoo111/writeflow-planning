@@ -82,6 +82,61 @@
     margin:0;padding:36px 0;}
 
   footer{text-align:center;color:var(--sub);font-size:12.5px;padding:32px 0 0;}
+
+  /* --- 기술 구조 / 아키텍처 세로 다이어그램 --- */
+  .vflow{max-width:400px;margin:24px auto 8px;display:flex;flex-direction:column;align-items:stretch;}
+  .vflow .vstep{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;text-align:center;}
+  .vflow .vstep .icon{font-size:22px;margin-bottom:6px;}
+  .vflow .vstep .title{font-weight:700;font-size:14.5px;margin-bottom:4px;}
+  .vflow .vstep .desc{font-size:12.5px;color:var(--sub);line-height:1.55;}
+  .vflow .varrow{align-self:center;color:var(--sub);font-size:16px;padding:2px 0;line-height:1;}
+
+  /* --- 원 아이디어 → 콘텐츠 가로/세로 플로우 --- */
+  .hflow-wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0;margin:22px 0 8px;}
+  .hflow-wrap .hstep{background:var(--chip);border:1px solid var(--line);border-radius:12px;
+    padding:14px 14px;font-size:13px;min-width:110px;max-width:148px;text-align:center;}
+  .hflow-wrap .hstep .hicon{font-size:18px;margin-bottom:4px;}
+  .hflow-wrap .hstep .title{font-weight:700;margin-bottom:4px;font-size:12.5px;}
+  .hflow-wrap .hstep .desc{color:var(--sub);font-size:11.5px;line-height:1.45;}
+  .hflow-wrap .harrow{color:var(--sub);font-size:16px;padding:0 4px;flex-shrink:0;}
+  @media (max-width:760px){
+    .hflow-wrap{flex-direction:column;}
+    .hflow-wrap .harrow{transform:rotate(90deg);padding:2px 0;}
+    .hflow-wrap .hstep{max-width:280px;width:100%;}
+  }
+
+  /* --- UI 목업 (콘텐츠 작성 화면 예시) --- */
+  .mockup-caption{font-size:13px;font-weight:700;color:var(--sub);margin:26px 0 12px;
+    text-transform:uppercase;letter-spacing:.04em;}
+  .app-frame{display:flex;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    background:var(--bg);max-width:600px;margin:0 auto;}
+  .app-sidebar{width:140px;flex-shrink:0;background:var(--card);border-right:1px solid var(--line);
+    padding:16px 12px;}
+  .app-logo{font-weight:800;font-size:13px;margin-bottom:16px;color:var(--accent);}
+  .app-sidebar nav{display:flex;flex-direction:column;gap:4px;}
+  .app-sidebar nav a{font-size:12px;padding:7px 9px;border-radius:8px;color:var(--sub);
+    text-decoration:none;display:block;}
+  .app-sidebar nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:700;}
+  .app-main{flex:1;min-width:0;padding:20px 22px;background:var(--card);}
+  .app-main h4{margin:0 0 4px;font-size:16px;font-weight:800;}
+  .app-sub{font-size:12.5px;color:var(--sub);margin:0 0 14px;}
+  .app-label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;}
+  .app-textarea{background:var(--chip);border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px;font-size:12px;color:var(--sub);margin-bottom:14px;}
+  .app-field-group{margin-bottom:12px;}
+  .app-field-label{display:block;font-size:11.5px;font-weight:700;color:var(--sub);margin-bottom:6px;}
+  .pill-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:11.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);
+    background:var(--chip);color:var(--ink);}
+  .pill.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .app-cta{margin-top:10px;width:100%;background:var(--accent);color:#fff;border:none;
+    border-radius:10px;padding:12px;font-size:13px;font-weight:700;text-align:center;}
+  @media (max-width:600px){
+    .app-frame{flex-direction:column;}
+    .app-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line);}
+    .app-sidebar nav{flex-direction:row;flex-wrap:wrap;}
+  }
 </style>
 </head>
 <body>
@@ -111,8 +166,10 @@
       <li><a href="#s6">UI/UX 구성</a></li>
       <li><a href="#s7">생성 품질 및 정확성 관리</a></li>
       <li><a href="#s8">MVP 개발 범위 및 성공 기준</a></li>
-      <li><a href="#s9">기대 효과 및 차별화 방향</a></li>
-      <li><a href="#s10">향후 확장 방향</a></li>
+      <li><a href="#s9">기술 구현 구조</a></li>
+      <li><a href="#s10">데이터 및 보안 설계</a></li>
+      <li><a href="#s11">기대 효과 및 차별화 방향</a></li>
+      <li><a href="#s12">향후 확장 방향</a></li>
     </ol>
   </nav>
 
@@ -195,6 +252,24 @@
         <tr><td class="step">7. 수정 및 활용</td><td>생성된 원고를 수정·복사하여 콘텐츠 제작에 활용</td></tr>
       </tbody>
     </table>
+
+    <h3>One Idea → Content</h3>
+    <p class="summary">하나의 아이디어가 콘텐츠로 완성되기까지의 흐름</p>
+    <div class="hflow-wrap">
+      <div class="hstep"><div class="hicon">📰</div><div class="title">Idea / Reference</div><div class="desc">뉴스 · 자료 · 메모</div></div>
+      <div class="harrow">→</div>
+      <div class="hstep"><div class="hicon">✍️</div><div class="title">Input</div><div class="desc">주제 또는 참고자료 입력</div></div>
+      <div class="harrow">→</div>
+      <div class="hstep"><div class="hicon">⚙️</div><div class="title">Setting</div><div class="desc">Blog/YouTube/Shorts<br>목적 · 스타일 · 길이</div></div>
+      <div class="harrow">→</div>
+      <div class="hstep"><div class="hicon">🤖</div><div class="title">AI Generation</div><div class="desc">원고 자동 생성</div></div>
+      <div class="harrow">→</div>
+      <div class="hstep"><div class="hicon">📦</div><div class="title">Output</div><div class="desc">Blog · YouTube · Shorts</div></div>
+      <div class="harrow">→</div>
+      <div class="hstep"><div class="hicon">🛠️</div><div class="title">Edit</div><div class="desc">더 쉽게 · 더 짧게<br>다시 생성</div></div>
+      <div class="harrow">→</div>
+      <div class="hstep"><div class="hicon">🚀</div><div class="title">Use</div><div class="desc">복사 → 콘텐츠 제작</div></div>
+    </div>
   </section>
 
   <section class="card" id="s5">
@@ -249,6 +324,53 @@
       <li><b>생성 중 화면</b> — "자료를 분석하고 있습니다 → 원고 구조를 만들고 있습니다 → 본문을 작성하고 있습니다" 형태로 진행 상태 표시</li>
       <li><b>결과 화면</b> — 제목·Hook 후보, 생성된 원고, 빠른 수정, 이전 버전, 전체 복사를 한 화면에서 제공</li>
     </ul>
+
+    <div class="mockup-caption">WriteFlow AI 콘텐츠 작성 화면 예시</div>
+    <div class="app-frame">
+      <aside class="app-sidebar">
+        <div class="app-logo">WriteFlow AI</div>
+        <nav>
+          <a class="active">Dashboard</a>
+          <a>새 콘텐츠 작성</a>
+          <a>내 콘텐츠</a>
+          <a>Templates</a>
+          <a>Settings</a>
+        </nav>
+      </aside>
+      <div class="app-main">
+        <h4>새 콘텐츠 만들기</h4>
+        <p class="app-sub">아이디어를 콘텐츠로 바꿔보세요.</p>
+        <span class="app-label">무엇에 대해 작성할까요?</span>
+        <div class="app-textarea">주제 또는 참고자료를 입력하세요.</div>
+
+        <div class="app-field-group">
+          <span class="app-field-label">콘텐츠 유형</span>
+          <div class="pill-row">
+            <span class="pill active">Blog</span><span class="pill">YouTube</span><span class="pill">Shorts</span>
+          </div>
+        </div>
+        <div class="app-field-group">
+          <span class="app-field-label">목적</span>
+          <div class="pill-row">
+            <span class="pill active">정보 전달</span><span class="pill">이슈 설명</span><span class="pill">분석</span><span class="pill">흥미 유발</span>
+          </div>
+        </div>
+        <div class="app-field-group">
+          <span class="app-field-label">스타일</span>
+          <div class="pill-row">
+            <span class="pill active">쉽게</span><span class="pill">전문적</span><span class="pill">친근하게</span><span class="pill">재미있게</span>
+          </div>
+        </div>
+        <div class="app-field-group">
+          <span class="app-field-label">길이</span>
+          <div class="pill-row">
+            <span class="pill">3분</span><span class="pill active">5분</span><span class="pill">10분</span>
+          </div>
+        </div>
+
+        <div class="app-cta">AI 원고 생성하기</div>
+      </div>
+    </div>
   </section>
 
   <section class="card" id="s7">
@@ -292,7 +414,101 @@
   </section>
 
   <section class="card" id="s9">
-    <h2><span class="num">09</span> 기대 효과 및 차별화 방향</h2>
+    <h2><span class="num">09</span> 기술 구현 구조</h2>
+    <p class="summary">WriteFlow AI MVP는 사용자가 입력한 주제와 선택 옵션을 기반으로 동적 프롬프트를 생성하고, AI API를 호출하여 플랫폼별 콘텐츠 결과를 반환하는 구조로 개발한다.</p>
+
+    <p>사용자가 선택한 <b>콘텐츠 종류 · 목적 · 스타일 · 길이</b> 값을 하나의 Prompt Engine에서 조합하여 AI 요청을 생성한다.</p>
+
+    <div class="callout">
+      <b>예시 설정</b><br>
+      콘텐츠 유형: YouTube · 목적: 이슈 설명 · 스타일: 친근하게 · 길이: 5분<br><br>
+      이 설정을 바탕으로 시스템이 내부적으로 플랫폼에 맞는 프롬프트를 자동 생성한다.<br><br>
+      <i>"입력 자료를 기반으로 YouTube용 약 5분 분량의 대본을 작성한다. 목적은 이슈 설명이며, 친근하고 이해하기 쉬운 스타일로 작성한다."</i><br><br>
+      <b>출력 구조</b> — 제목 후보 3개 · Hook 후보 3개 · 오프닝 · 본문 · 핵심 설명 · 마무리
+    </div>
+
+    <p>수십 개의 프롬프트를 따로 관리하는 대신 사용자의 선택값을 조합하는 <b>"Dynamic Prompt Engine"</b> 방식으로 구현한다.</p>
+
+    <h3>기술 스택</h3>
+    <table>
+      <thead><tr><th style="width:140px">영역</th><th>기술 방향</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>HTML / CSS / JavaScript 또는 React 기반 Web UI</td></tr>
+        <tr><td>AI</td><td>OpenAI API</td></tr>
+        <tr><td>Prompt</td><td>사용자 선택값 기반 Dynamic Prompt Engine</td></tr>
+        <tr><td>데이터 저장</td><td>초기 MVP는 Browser Local Storage</td></tr>
+        <tr><td>배포</td><td>GitHub Pages 또는 별도 Web Hosting</td></tr>
+        <tr><td>버전 관리</td><td>Git / GitHub</td></tr>
+      </tbody>
+    </table>
+
+    <h3>WriteFlow 시스템 구조</h3>
+    <p class="summary">사용자 입력부터 결과 생성까지 이어지는 아키텍처 흐름</p>
+    <div class="vflow">
+      <div class="vstep">
+        <div class="icon">👤</div>
+        <div class="title">USER</div>
+        <div class="desc">1인 크리에이터</div>
+      </div>
+      <div class="varrow">↓</div>
+      <div class="vstep">
+        <div class="icon">🖥️</div>
+        <div class="title">WriteFlow Web</div>
+        <div class="desc">주제 / 자료 입력<br>콘텐츠 종류 선택<br>목적 / 스타일 / 길이 선택</div>
+      </div>
+      <div class="varrow">↓</div>
+      <div class="vstep">
+        <div class="icon">⚙️</div>
+        <div class="title">Prompt Engine</div>
+        <div class="desc">사용자 설정 조합<br>플랫폼별 Prompt 생성</div>
+      </div>
+      <div class="varrow">↓</div>
+      <div class="vstep">
+        <div class="icon">🔐</div>
+        <div class="title">Backend API</div>
+        <div class="desc">API Key 보호<br>AI 요청 처리</div>
+      </div>
+      <div class="varrow">↓</div>
+      <div class="vstep">
+        <div class="icon">🤖</div>
+        <div class="title">OpenAI API</div>
+        <div class="desc">콘텐츠 생성</div>
+      </div>
+      <div class="varrow">↓</div>
+      <div class="vstep">
+        <div class="icon">📄</div>
+        <div class="title">Generated Result</div>
+        <div class="desc">제목 · Hook · 원고<br>수정 · 복사 · 재생성</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s10">
+    <h2><span class="num">10</span> 데이터 및 보안 설계</h2>
+    <p class="summary">WriteFlow AI는 초기 MVP 단계에서 사용자의 콘텐츠 설정과 최근 생성 결과를 브라우저 내 임시 저장 방식으로 관리한다.</p>
+
+    <div class="two-col">
+      <div class="mini-card">
+        <h4>🗂️ Local Storage</h4>
+        <p>최근 생성 결과와 기본 설정은 MVP 단계에서 브라우저 내 임시 저장</p>
+      </div>
+      <div class="mini-card">
+        <h4>🔑 API Key Protection</h4>
+        <p>OpenAI API Key는 Frontend 코드에 노출하지 않고 Backend 환경변수에서 관리</p>
+      </div>
+      <div class="mini-card">
+        <h4>📎 Reference Data</h4>
+        <p>사용자가 입력한 자료는 콘텐츠 생성 목적에 우선 활용하며 별도 사용하지 않는 것을 기본 원칙으로 설정</p>
+      </div>
+      <div class="mini-card">
+        <h4>👥 Future Account System</h4>
+        <p>향후 회원 기능 도입 시 사용자별 데이터 저장 및 접근 권한 구조 추가</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s11">
+    <h2><span class="num">11</span> 기대 효과 및 차별화 방향</h2>
     <p class="summary">크리에이터의 원고 작성 시간을 줄여 콘텐츠 기획·제작에 집중하게 하고, 워크플로우 중심의 차별화된 서비스를 제공.</p>
 
     <h3>기대 효과</h3>
@@ -308,8 +524,8 @@
     </ul>
   </section>
 
-  <section class="card" id="s10">
-    <h2><span class="num">10</span> 향후 확장 방향</h2>
+  <section class="card" id="s12">
+    <h2><span class="num">12</span> 향후 확장 방향</h2>
     <p class="summary">1차 MVP에서 원고 생성 기능의 실효성을 확인한 후, 기능을 단계적으로 확장하여 AI Content Workspace로 발전하는 것을 목표로 한다.</p>
 
     <table class="phase-table">
