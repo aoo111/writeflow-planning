@@ -7,13 +7,17 @@
 <style>
   :root{
     --bg:#f7f8fa; --card:#ffffff; --ink:#1b1f24; --sub:#5b6472;
-    --accent:#2f6f4f; --accent-soft:#e8f3ec; --line:#e4e7ec;
+    --accent:#2f7d5c; --accent-soft:#e8f3ec; --line:#e4e7ec;
     --chip:#f0f2f5; --table-head:#f1f3f5;
+    --hero-bg-1:#dcf0e5; --hero-bg-2:#bfe3d0; --hero-ink:#153c29;
+    --hero-chip-bg:#2f7d5c; --hero-chip-ink:#ffffff;
   }
   @media (prefers-color-scheme: dark){
     :root{ --bg:#14171c; --card:#1c2027; --ink:#eef0f3; --sub:#a3acb9;
       --accent:#6fce9a; --accent-soft:#1c2b23; --line:#2a2f38;
-      --chip:#242933; --table-head:#232833; }
+      --chip:#242933; --table-head:#232833;
+      --hero-bg-1:#6fce9a; --hero-bg-2:#1d5138; --hero-ink:#ffffff;
+      --hero-chip-bg:rgba(255,255,255,.14); --hero-chip-ink:#ffffff; }
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -21,15 +25,15 @@
     line-height:1.65;}
   .wrap{max-width:900px;margin:0 auto;padding:0 24px 80px;}
   header.hero{
-    background:linear-gradient(135deg,var(--accent) 0%,#1d5138 100%);
-    color:#fff;padding:64px 24px 48px;margin-bottom:8px;
+    background:linear-gradient(135deg,var(--hero-bg-1) 0%,var(--hero-bg-2) 100%);
+    color:var(--hero-ink);padding:64px 24px 48px;margin-bottom:8px;
   }
   header.hero .inner{max-width:900px;margin:0 auto;}
-  header.hero .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:14px;}
+  header.hero .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.75;margin-bottom:14px;}
   header.hero h1{font-size:38px;margin:0 0 12px;font-weight:800;letter-spacing:-.02em;}
-  header.hero p.lead{font-size:16px;opacity:.92;max-width:640px;margin:0;}
-  header.hero .tagline{margin-top:28px;font-size:15px;font-weight:600;
-    background:rgba(255,255,255,.14);display:inline-block;padding:8px 16px;border-radius:999px;}
+  header.hero p.lead{font-size:16px;opacity:.88;max-width:640px;margin:0;}
+  header.hero .tagline{margin-top:28px;font-size:15px;font-weight:600;color:var(--hero-chip-ink);
+    background:var(--hero-chip-bg);display:inline-block;padding:8px 16px;border-radius:999px;}
 
   nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;
     padding:20px 24px;margin:28px 0 40px;}
