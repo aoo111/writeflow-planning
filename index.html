@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WriteFlow AI 서비스 기획서</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1b1f24; --sub:#5b6472;
+    --accent:#2f6f4f; --accent-soft:#e8f3ec; --line:#e4e7ec;
+    --chip:#f0f2f5; --table-head:#f1f3f5;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#14171c; --card:#1c2027; --ink:#eef0f3; --sub:#a3acb9;
+      --accent:#6fce9a; --accent-soft:#1c2b23; --line:#2a2f38;
+      --chip:#242933; --table-head:#232833; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.65;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px 80px;}
+  header.hero{
+    background:linear-gradient(135deg,var(--accent) 0%,#1d5138 100%);
+    color:#fff;padding:64px 24px 48px;margin-bottom:8px;
+  }
+  header.hero .inner{max-width:900px;margin:0 auto;}
+  header.hero .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:14px;}
+  header.hero h1{font-size:38px;margin:0 0 12px;font-weight:800;letter-spacing:-.02em;}
+  header.hero p.lead{font-size:16px;opacity:.92;max-width:640px;margin:0;}
+  header.hero .tagline{margin-top:28px;font-size:15px;font-weight:600;
+    background:rgba(255,255,255,.14);display:inline-block;padding:8px 16px;border-radius:999px;}
+
+  nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 24px;margin:28px 0 40px;}
+  nav.toc h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin:0 0 12px;}
+  nav.toc ol{columns:2;column-gap:24px;margin:0;padding-left:20px;font-size:14px;}
+  nav.toc li{margin-bottom:6px;break-inside:avoid;}
+  nav.toc a{color:var(--ink);text-decoration:none;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+
+  section{margin:44px 0;}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px 36px;}
+  h2{font-size:23px;margin:0 0 16px;font-weight:800;letter-spacing:-.01em;
+    display:flex;align-items:baseline;gap:10px;}
+  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums;}
+  h3{font-size:16px;margin:28px 0 10px;font-weight:700;color:var(--ink);}
+  h3:first-of-type{margin-top:8px;}
+  p{color:var(--ink);margin:0 0 12px;}
+  p.summary{color:var(--sub);font-size:15px;margin-bottom:20px;}
+  ul.bullets{margin:0 0 8px;padding-left:20px;}
+  ul.bullets li{margin-bottom:8px;color:var(--ink);}
+  ul.bullets li b{font-weight:700;}
+
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 8px;}
+  .chip{background:var(--chip);border:1px solid var(--line);color:var(--ink);
+    font-size:13px;padding:6px 12px;border-radius:999px;}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{background:var(--table-head);font-weight:700;color:var(--ink);}
+  tr:last-child td{border-bottom:none;}
+  td.step{font-weight:700;color:var(--accent);white-space:nowrap;}
+
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0;}
+  .flow .box{background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;
+    padding:10px 14px;font-size:13px;font-weight:600;color:var(--ink);}
+  .flow .arrow{color:var(--sub);font-size:14px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0;}
+  @media (max-width:600px){.two-col{grid-template-columns:1fr;}}
+  .mini-card{background:var(--chip);border-radius:12px;padding:18px 20px;}
+  .mini-card h4{margin:0 0 8px;font-size:14px;font-weight:700;}
+  .mini-card p{font-size:13.5px;color:var(--sub);margin:0;}
+
+  .phase-table td.phase{font-weight:700;white-space:nowrap;}
+
+  .callout{background:var(--accent-soft);border-left:4px solid var(--accent);
+    border-radius:8px;padding:16px 20px;margin:20px 0;font-size:15px;}
+
+  .quote{font-size:20px;font-weight:700;text-align:center;color:var(--accent);
+    margin:0;padding:36px 0;}
+
+  footer{text-align:center;color:var(--sub);font-size:12.5px;padding:32px 0 0;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="inner">
+    <div class="eyebrow">서비스 기획서 · Service Planning Document</div>
+    <h1>WriteFlow AI</h1>
+    <p class="lead">
+      정보·지식형 콘텐츠를 제작하는 1인 크리에이터를 위한 AI 콘텐츠 원고 제작 서비스.
+      복잡한 프롬프트 없이 선택형 인터페이스로 Blog, YouTube, Shorts 대본을 1분 이내에 생성합니다.
+    </p>
+    <div class="tagline">"하나의 아이디어를 더 많은 콘텐츠로, 반복 작업은 더 적게."</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <h2>목차</h2>
+    <ol>
+      <li><a href="#s1">서비스 개요</a></li>
+      <li><a href="#s2">추진 배경 및 문제 정의</a></li>
+      <li><a href="#s3">주요 타깃 사용자</a></li>
+      <li><a href="#s4">서비스 이용 방식</a></li>
+      <li><a href="#s5">MVP 주요 기능</a></li>
+      <li><a href="#s6">UI/UX 구성</a></li>
+      <li><a href="#s7">생성 품질 및 정확성 관리</a></li>
+      <li><a href="#s8">MVP 개발 범위 및 성공 기준</a></li>
+      <li><a href="#s9">기대 효과 및 차별화 방향</a></li>
+      <li><a href="#s10">향후 확장 방향</a></li>
+    </ol>
+  </nav>
+
+  <section class="card" id="s1">
+    <h2><span class="num">01</span> WriteFlow AI 서비스 개요</h2>
+    <p class="summary">1인 크리에이터가 정보·지식형 콘텐츠 원고를 쉽고 빠르게 만들 수 있도록 돕는 AI 서비스.</p>
+
+    <h3>서비스 정의</h3>
+    <ul class="bullets">
+      <li>정보·지식형 콘텐츠를 제작하는 1인 크리에이터를 위한 AI 콘텐츠 원고 제작 서비스</li>
+      <li>사용자가 콘텐츠 주제나 참고자료를 입력하고 콘텐츠 종류·목적·스타일·길이를 선택하면 Blog 글, YouTube 대본, Shorts 대본을 자동 생성</li>
+      <li>복잡한 프롬프트 작성 대신 선택형 인터페이스를 제공하여 초보 크리에이터도 쉽게 사용 가능</li>
+    </ul>
+
+    <h3>프로젝트 목표</h3>
+    <ul class="bullets">
+      <li>1인 크리에이터가 주제나 자료 입력 후 <b>1분 이내</b>에 수정하여 활용할 수 있는 콘텐츠 초안 확보</li>
+      <li>초기 MVP는 원고 작성에 소요되는 반복 업무를 줄이는 것에 집중</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s2">
+    <h2><span class="num">02</span> 추진 배경 및 문제 정의</h2>
+    <p class="summary">1인 크리에이터는 콘텐츠 제작의 모든 과정을 혼자 수행하며, 특히 원고 작성 과정에서 많은 어려움을 겪는다.</p>
+
+    <h3>1인 크리에이터의 어려움</h3>
+    <ul class="bullets">
+      <li><b>콘텐츠 제작 전 과정 수행</b> — 경제·주식, AI·IT, 뉴스, 생활정보 등 정보·지식형 콘텐츠 제작자는 기획부터 자료 정리, 원고 작성, 촬영·편집까지 대부분을 혼자 수행</li>
+      <li><b>원고 작성의 복잡성</b> — 같은 소재라도 Blog는 정보형 글, YouTube는 말하기 자연스러운 대본, Shorts는 압축된 대본이 각각 필요</li>
+    </ul>
+
+    <h3>기존 생성형 AI 활용의 한계</h3>
+    <ul class="bullets">
+      <li><b>복잡한 프롬프트 작성</b> — 매번 "5분짜리 YouTube 대본으로 작성해줘" 같은 조건을 직접 작성해야 함</li>
+      <li><b>반복적인 수정 과정</b> — 원하는 결과가 안 나오면 조건을 다시 설명하며 여러 번 수정 필요, 초보자에게는 프롬프트 작성 자체가 또 다른 작업</li>
+    </ul>
+
+    <div class="callout">
+      <b>WriteFlow AI의 해결 방안</b> — 복잡한 프롬프트 작성 과정을 간단한 선택형 UI로 전환하여, 크리에이터가 원고 작성 시간을 줄이고 콘텐츠 기획·제작에 집중할 수 있도록 지원한다.
+    </div>
+  </section>
+
+  <section class="card" id="s3">
+    <h2><span class="num">03</span> 주요 타깃 사용자</h2>
+    <p class="summary">정보·지식형 콘텐츠를 제작하는 초보·소규모 1인 크리에이터 및 예비 크리에이터를 핵심 사용자로 설정.</p>
+
+    <div class="two-col">
+      <div class="mini-card">
+        <h4>정보·지식형 콘텐츠 크리에이터</h4>
+        <p>경제·주식, AI·IT, 뉴스·시사, 생활정보 등을 혼자 제작하는 초보·소규모 1인 크리에이터 및 예비 크리에이터</p>
+      </div>
+      <div class="mini-card">
+        <h4>원고 작성에 어려움을 겪는 사용자</h4>
+        <p>아이디어·자료는 있지만 원고 정리 시간이 오래 걸리고, 생성형 AI 경험은 있으나 복잡한 프롬프트에 익숙하지 않은 사람</p>
+      </div>
+      <div class="mini-card">
+        <h4>다양한 플랫폼 활용 사용자</h4>
+        <p>전문 인력 없이 기획·제작을 혼자 수행하며, 하나의 소재를 Blog·YouTube·Shorts 등 여러 플랫폼에서 활용하고 싶은 사용자</p>
+      </div>
+      <div class="mini-card">
+        <h4>향후 확장 방향</h4>
+        <p>초기엔 핵심 사용자층에 집중해 서비스를 검증하고, 이후 소규모 사업자·마케팅 담당자·기업 콘텐츠 운영 조직으로 확대</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s4">
+    <h2><span class="num">04</span> 서비스 이용 방식</h2>
+    <p class="summary">사용자가 긴 프롬프트 없이 몇 가지 항목 선택만으로 콘텐츠 초안을 만들 수 있도록 단순하게 구성.</p>
+
+    <table>
+      <thead><tr><th style="width:180px">단계</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1. 주제/자료 입력</td><td>콘텐츠로 만들고 싶은 주제나 참고자료를 입력</td></tr>
+        <tr><td class="step">2. 콘텐츠 종류 선택</td><td>Blog / YouTube / Shorts 중 원하는 콘텐츠 유형 선택</td></tr>
+        <tr><td class="step">3. 콘텐츠 목적 선택</td><td>정보 전달 / 이슈 설명 / 분석 / 흥미 유발 중 선택</td></tr>
+        <tr><td class="step">4. 스타일 선택</td><td>쉽게 / 전문적 / 친근하게 / 재미있게 중 선택</td></tr>
+        <tr><td class="step">5. 길이 선택</td><td>콘텐츠의 길이 설정</td></tr>
+        <tr><td class="step">6. AI 원고 생성</td><td>선택한 조건에 맞춰 AI가 원고를 생성</td></tr>
+        <tr><td class="step">7. 수정 및 활용</td><td>생성된 원고를 수정·복사하여 콘텐츠 제작에 활용</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card" id="s5">
+    <h2><span class="num">05</span> MVP 주요 기능</h2>
+    <p class="summary">사용자가 콘텐츠 초안을 효율적으로 생성하고 수정할 수 있도록 다양한 기능을 제공.</p>
+
+    <h3>콘텐츠 입력 및 유형 지원</h3>
+    <table>
+      <thead><tr><th style="width:130px">분류</th><th style="width:130px">세부 기능</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td>콘텐츠 입력</td><td>주제/참고자료 입력</td><td>메모, 뉴스, 조사자료, 인터뷰, 강의자료, 기존 초안 등을 입력</td></tr>
+        <tr><td rowspan="3">콘텐츠 유형 지원</td><td>Blog</td><td>제목, 도입부, 소제목, 본문, 정리 등 읽기 좋은 정보형 글 생성</td></tr>
+        <tr><td>YouTube</td><td>제목·Hook·오프닝·본문·마무리 등 말하기 자연스러운 대본 생성</td></tr>
+        <tr><td>Shorts</td><td>약 30~60초 안에 전달되는 Hook·핵심 내용·결론 중심 구성</td></tr>
+        <tr><td>제목·Hook 후보</td><td>제목/Hook 후보 제공</td><td>YouTube·Shorts는 제목과 Hook 후보를 각 3개 제공, 사용자가 선택</td></tr>
+      </tbody>
+    </table>
+
+    <h3>원고 수정 및 관리 기능</h3>
+    <table>
+      <thead><tr><th style="width:130px">분류</th><th style="width:130px">세부 기능</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td>원고 수정</td><td>빠른 수정 기능</td><td>"더 짧게, 더 길게, 더 쉽게, 더 재미있게, 다시 생성" 등 즉시 편집</td></tr>
+        <tr><td rowspan="2">원고 관리</td><td>버전 비교 및 저장</td><td>최근 3~5개 생성 결과를 임시 저장해 이전 버전과 비교</td></tr>
+        <tr><td>전체 복사 기능</td><td>완성된 원고를 전체 복사해 다른 제작 도구에서 바로 사용</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card" id="s6">
+    <h2><span class="num">06</span> UI/UX 구성</h2>
+    <p class="summary">콘텐츠 제작 경험이 많지 않은 사용자도 직관적으로 사용할 수 있도록 설계.</p>
+
+    <h3>핵심 상태 중심 설계</h3>
+    <div class="flow">
+      <div class="box">콘텐츠 작성</div><span class="arrow">→</span>
+      <div class="box">생성 중</div><span class="arrow">→</span>
+      <div class="box">결과 확인</div>
+    </div>
+
+    <h3>메인 화면 (대시보드)</h3>
+    <ul class="bullets">
+      <li><b>사이드바 메뉴</b> — Home, New Content, My Content, Templates, Settings</li>
+      <li><b>최근 생성 콘텐츠</b> — 카드 형태로 확인, "새 콘텐츠 작성" 버튼으로 바로 제작 시작</li>
+      <li><b>활동 요약</b> — Blog·YouTube·Shorts별 생성 개수를 시각적으로 표시</li>
+      <li><b>추천 템플릿</b> — 플랫폼별 추천 템플릿으로 제작 아이디어 제공</li>
+    </ul>
+
+    <h3>화면별 흐름</h3>
+    <ul class="bullets">
+      <li><b>콘텐츠 작성 화면</b> — 주제 입력과 함께 종류·목적·스타일·길이를 순서대로 선택</li>
+      <li><b>생성 중 화면</b> — "자료를 분석하고 있습니다 → 원고 구조를 만들고 있습니다 → 본문을 작성하고 있습니다" 형태로 진행 상태 표시</li>
+      <li><b>결과 화면</b> — 제목·Hook 후보, 생성된 원고, 빠른 수정, 이전 버전, 전체 복사를 한 화면에서 제공</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s7">
+    <h2><span class="num">07</span> 생성 품질 및 정확성 관리</h2>
+    <p class="summary">기능의 수보다 실제로 사용할 수 있는 원고를 안정적으로 생성하는 것을 핵심 경쟁력으로 삼으며, 정확성 관리에 중점.</p>
+
+    <ul class="bullets">
+      <li><b>참고자료 우선 활용</b> — 사용자가 입력한 자료를 우선 활용하고, 자료에 없는 정보는 임의로 추가하지 않음</li>
+      <li><b>정확성 안내 및 검증</b> — AI 생성 초안임을 명시하고 게시 전 사실관계 확인을 안내, 개발 과정에서 플랫폼 적합성·길이·말투·가독성·사실성·활용 가능성을 반복 검증</li>
+      <li><b>사용자 피드백 활용</b> — 결과 화면에 👍/👎 평가 기능을 제공해 만족도를 확인하고 AI 프롬프트 개선에 반영</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s8">
+    <h2><span class="num">08</span> MVP 개발 범위 및 성공 기준</h2>
+    <p class="summary">핵심 원고 생성 기능에 집중하며, 1인 크리에이터가 1분 안에 활용 가능한 초안을 얻을 수 있는지를 성공 기준으로 삼는다.</p>
+
+    <div class="two-col">
+      <div class="mini-card">
+        <h4>구현 기능</h4>
+        <p>주제·참고자료 입력, Blog·YouTube·Shorts 선택, 목적·스타일·길이 설정, AI 원고 생성, 제목·Hook 추천, 빠른 수정, 복사, 최근 결과 임시 저장, 생성 진행 상태, 사용자 평가</p>
+      </div>
+      <div class="mini-card">
+        <h4>제외 기능</h4>
+        <p>회원가입, 결제, 뉴스 자동 수집, 실시간 트렌드 검색, 이미지·썸네일 생성, TTS, 영상 제작, YouTube 자동 게시 및 수익 분석</p>
+      </div>
+    </div>
+
+    <h3>핵심 성공 기준</h3>
+    <div class="callout">
+      "1인 크리에이터가 주제나 자료를 입력하고 1분 안에 실제 콘텐츠 제작에 활용할 수 있는 초안을 얻을 수 있는가?"
+    </div>
+
+    <h3>평가 지표</h3>
+    <div class="badge-row">
+      <span class="chip">생성 성공률</span>
+      <span class="chip">사용자 만족도</span>
+      <span class="chip">재생성률</span>
+      <span class="chip">실제 초안 활용 가능성</span>
+    </div>
+  </section>
+
+  <section class="card" id="s9">
+    <h2><span class="num">09</span> 기대 효과 및 차별화 방향</h2>
+    <p class="summary">크리에이터의 원고 작성 시간을 줄여 콘텐츠 기획·제작에 집중하게 하고, 워크플로우 중심의 차별화된 서비스를 제공.</p>
+
+    <h3>기대 효과</h3>
+    <ul class="bullets">
+      <li>반복적인 프롬프트 작성과 원고 초안 제작에 사용하는 시간을 절감</li>
+      <li>콘텐츠 방향 결정·검토·실제 제작에 더 많은 시간 투자 가능</li>
+    </ul>
+
+    <h3>차별화 방향</h3>
+    <ul class="bullets">
+      <li><b>콘텐츠 제작 워크플로우 중심 서비스</b> — 프롬프트를 직접 설계하지 않고 종류 → 목적 → 스타일 → 길이 선택만으로 플랫폼에 맞는 결과 생성</li>
+      <li><b>One Source → Multi Content</b> — 하나의 뉴스·자료·아이디어를 Blog·YouTube·Shorts로 동시에 변환</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s10">
+    <h2><span class="num">10</span> 향후 확장 방향</h2>
+    <p class="summary">1차 MVP에서 원고 생성 기능의 실효성을 확인한 후, 기능을 단계적으로 확장하여 AI Content Workspace로 발전하는 것을 목표로 한다.</p>
+
+    <table class="phase-table">
+      <thead><tr><th style="width:150px">단계</th><th style="width:220px">기능</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td class="phase">Phase 1 — Write</td><td>AI 콘텐츠 원고 생성</td><td>현재 MVP의 핵심 기능</td></tr>
+        <tr><td class="phase">Phase 2 — Template</td><td>자주 사용하는 콘텐츠 설정 저장</td><td>사용자가 선호하는 설정 저장 및 재활용</td></tr>
+        <tr><td class="phase">Phase 3 — Multi Content</td><td>Blog·YouTube·Shorts 동시 변환</td><td>하나의 아이디어로 여러 플랫폼 콘텐츠 동시 생성</td></tr>
+        <tr><td class="phase">Phase 4 — My Style</td><td>기존 콘텐츠·말투 반영 개인화</td><td>개인화된 콘텐츠 스타일 적용</td></tr>
+        <tr><td class="phase">Phase 5 — Trend Finder</td><td>국내·글로벌 트렌드 탐색</td><td>최신 트렌드 기반 콘텐츠 아이디어 제공</td></tr>
+        <tr><td class="phase">Phase 6 — Visual</td><td>이미지 및 썸네일 제작</td><td>콘텐츠 관련 시각 자료 생성</td></tr>
+      </tbody>
+    </table>
+
+    <h3>장기 목표</h3>
+    <p>트렌드 발견 → 자료 입력 → 원고 작성 → 플랫폼별 콘텐츠 변환 → 이미지·썸네일 제작까지 연결하여 1인 크리에이터의 반복적인 콘텐츠 제작 업무를 지원하는 <b>AI Content Workspace</b>로 발전시킨다.</p>
+
+    <h3>핵심 제안</h3>
+    <p>WriteFlow AI는 경제·AI·뉴스·생활정보 등 정보형 콘텐츠를 혼자 제작하는 1인 크리에이터가 복잡한 프롬프트 없이 주제와 몇 가지 옵션만 선택하여 Blog·YouTube·Shorts용 콘텐츠 초안을 빠르게 제작할 수 있도록 지원하는 AI 서비스이다.</p>
+  </section>
+
+  <p class="quote">"하나의 아이디어를 더 많은 콘텐츠로, 반복 작업은 더 적게."</p>
+
+  <footer>WriteFlow AI 서비스 기획서 · Generated from WriteFlow.pdf</footer>
+
+</div>
+</body>
+</html>
