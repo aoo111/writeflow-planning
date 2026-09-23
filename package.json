@@ -1,0 +1,12 @@
+{
+  "name": "writeflow-ai",
+  "version": "1.0.0",
+  "description": "WriteFlow AI — 뉴스·아이디어를 블로그/YouTube/Shorts 원고로 바꾸는 서비스 (로컬 서버 + 원문 가져오기 API)",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
