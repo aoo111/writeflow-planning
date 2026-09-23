@@ -123,6 +123,9 @@
   .result-body{flex:1;border:1px solid var(--line);border-radius:12px;background:var(--field-bg);
     padding:20px 22px;margin-bottom:16px;display:flex;}
   .placeholder{margin:auto;color:var(--sub-soft);font-size:13.5px;text-align:center;}
+  .placeholder.error{color:#c2410c;max-width:420px;line-height:1.6;}
+  .result-warn{margin-top:14px;font-size:12.5px;color:#c2410c;}
+  .cta-btn:disabled, .btn-outline:disabled{opacity:.6;cursor:wait;}
 
   .result-content{display:none;font-size:14px;line-height:1.85;color:var(--ink);white-space:pre-wrap;
     width:100%;}
@@ -290,8 +293,8 @@
 </div>
 
 <script>
-  // 예시(테스트용) 원고 — 추후 실제 AI API 응답으로 교체 예정
-  const SAMPLE_TEXT = "안녕하세요. 오늘은 AI 시대 직업의 변화에 대해 알아보겠습니다. AI 기술이 빠르게 발전하면서 우리가 일하는 방식에도 많은 변화가 생기고 있습니다.";
+  // 마지막으로 생성된 원고 (복사·다운로드용). 원고는 server.js의 /api/generate가 OpenRouter로 생성한다.
+  let currentDraft = "";
 
   function setupGroup(groupId){
     const group = document.getElementById(groupId);
@@ -428,7 +431,19 @@
   const statusTime = document.getElementById("statusTime");
   const topicHint = document.getElementById("topicHint");
 
-  function generateDraft(){
+  const generateBtn = document.getElementById("generateBtn");
+  const regenBtn = document.getElementById("regenBtn");
+  let generating = false;
+
+  function showPlaceholder(text, isError){
+    placeholder.textContent = text;
+    placeholder.classList.toggle("error", !!isError);
+    placeholder.style.display = "block";
+    resultContent.style.display = "none";
+  }
+
+  async function generateDraft(){
+    if(generating) return;
     if(!topicInput.value.trim()){
       topicHint.style.display = "block";
       topicInput.focus();
@@ -440,8 +455,48 @@
     const style = getActive("styleGroup");
     const length = getActive("lengthGroup");
 
-    resultContent.innerHTML =
-      `<div class="result-badge">${type} 원고 · ${style} · ${length}</div>${SAMPLE_TEXT}`;
+    generating = true;
+    const originalLabel = generateBtn.textContent;
+    generateBtn.textContent = "⏳ AI가 원고를 쓰는 중이에요…";
+    generateBtn.disabled = regenBtn.disabled = true;
+    statusEl.style.display = "none";
+    resultActions.style.display = "none";
+    showPlaceholder("⏳ 원고를 생성하고 있어요. 길이에 따라 10~60초 정도 걸려요.");
+
+    let data;
+    try{
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: topicInput.value, reference: refInput.value, type, style, length }),
+      });
+      data = await res.json();
+    }catch(err){
+      data = { ok:false, error:"WriteFlow 서버에 연결하지 못했어요. (npm start로 실행했는지 확인해 주세요)" };
+    }finally{
+      generating = false;
+      generateBtn.textContent = originalLabel;
+      generateBtn.disabled = regenBtn.disabled = false;
+    }
+
+    if(!data.ok){
+      currentDraft = "";
+      showPlaceholder("⚠ " + (data.error || "원고 생성에 실패했어요."), true);
+      return;
+    }
+
+    currentDraft = data.text;
+    // AI 응답은 HTML이 아닌 텍스트로 넣는다.
+    const badge = document.createElement("div");
+    badge.className = "result-badge";
+    badge.textContent = `${type} 원고 · ${style} · ${length}`;
+    resultContent.replaceChildren(badge, document.createTextNode(currentDraft));
+    if(data.truncated){
+      const warn = document.createElement("div");
+      warn.className = "result-warn";
+      warn.textContent = "⚠ 원고가 최대 길이에 도달해 끝부분이 잘렸을 수 있어요. 길이를 줄여 다시 생성해 보세요.";
+      resultContent.appendChild(warn);
+    }
 
     placeholder.style.display = "none";
     resultContent.style.display = "block";
@@ -454,8 +509,8 @@
     });
   }
 
-  document.getElementById("generateBtn").addEventListener("click", generateDraft);
-  document.getElementById("regenBtn").addEventListener("click", generateDraft);
+  generateBtn.addEventListener("click", generateDraft);
+  regenBtn.addEventListener("click", generateDraft);
 
   function copyToClipboard(text){
     const ta = document.createElement("textarea");
@@ -474,12 +529,12 @@
   document.getElementById("copyBtn").addEventListener("click", () => {
     const btn = document.getElementById("copyBtn");
     const original = btn.textContent;
-    btn.textContent = copyToClipboard(SAMPLE_TEXT) ? "✓ 복사됨" : "복사 실패 (직접 선택해 주세요)";
+    btn.textContent = copyToClipboard(currentDraft) ? "✓ 복사됨" : "복사 실패 (직접 선택해 주세요)";
     setTimeout(() => { btn.textContent = original; }, 1500);
   });
 
   document.getElementById("downloadBtn").addEventListener("click", () => {
-    const blob = new Blob([SAMPLE_TEXT], { type: "text/plain;charset=utf-8" });
+    const blob = new Blob([currentDraft], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
