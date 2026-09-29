@@ -2,7 +2,8 @@
  * WriteFlow AI 로컬 서버 (`npm start`).
  * 배포(Vercel)에서는 이 파일 대신 api/*.js 함수가 같은 lib/ 코드를 실행한다.
  * - 정적 파일(index.html 등) 제공
- * - GET  /api/article?url=...  뉴스 원문 본문 가져오기 (lib/article.js)
+ * - GET  /api/article?url=...  원문 본문 가져오기 (lib/article.js, 지금은 화면에서 쓰지 않음 — 1차 출처 읽기용으로 남겨 둠)
+ * - POST /api/questions        관점 질문 생성 (lib/questions.js)
  * - POST /api/generate         OpenRouter로 AI 원고 생성 (lib/generate.js)
  * 외부 패키지 없이 Node 내장 기능만 사용한다.
  */
@@ -21,6 +22,7 @@ try {
 
 const { handleArticle } = require("./lib/article");
 const { handleGenerate, DEFAULT_MODEL } = require("./lib/generate");
+const { handleQuestions } = require("./lib/questions");
 
 const port = Number(process.env.PORT || 8820);
 
@@ -57,6 +59,7 @@ http
   .createServer((req, res) => {
     const reqUrl = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     if (reqUrl.pathname === "/api/article") return handleArticle(req, res);
+    if (reqUrl.pathname === "/api/questions") return handleQuestions(req, res);
     if (reqUrl.pathname === "/api/generate") return handleGenerate(req, res);
     serveStatic(reqUrl, res);
   })

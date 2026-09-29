@@ -111,6 +111,45 @@
   .news-source-status.ok{color:#16a34a;}
   .news-source-status.warn{color:#c2410c;}
 
+  /* ---------- 채널 설정 (내 채널 기본 관점) ---------- */
+  .head-btn{margin-left:auto;align-self:flex-start;flex-shrink:0;border:1px solid var(--line);
+    background:var(--field-bg);color:var(--sub);border-radius:999px;padding:6px 11px;
+    font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .head-btn:hover, .head-btn.set{border-color:var(--accent);color:var(--accent-ink);}
+  .channel-box{display:none;border:1px solid var(--line);background:var(--field-bg);
+    border-radius:12px;padding:14px;margin-bottom:20px;}
+  .channel-box.open{display:block;}
+  .channel-box h3{margin:0 0 2px;font-size:13.5px;}
+  .channel-box > p{margin:0 0 4px;font-size:12px;color:var(--sub);}
+  .channel-box label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px;}
+  .channel-box input[type="text"]{background:var(--card);padding:9px 12px;}
+  .channel-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px;}
+  .channel-actions .btn-outline, .channel-actions .btn-accent{padding:8px 14px;}
+
+  /* ---------- 사실 메모 · 관점 질문 ---------- */
+  .field-note{font-size:12px;color:var(--sub);margin-top:6px;}
+  .field-note.warn{color:#c2410c;}
+  .field-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
+  .field-head label{font-size:13.5px;font-weight:700;}
+  #primarySources{min-height:52px;}
+  .mini-btn{border:1px solid var(--line);background:var(--field-bg);color:var(--accent-ink);
+    border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .mini-btn:hover{border-color:var(--accent);}
+  .mini-btn:disabled{opacity:.6;cursor:wait;}
+  .perspective-box{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--field-bg);}
+  .q-status{font-size:12px;color:var(--sub);margin-bottom:12px;}
+  .q-status.warn{color:#c2410c;}
+  .q-item{margin-bottom:14px;}
+  .q-text{font-size:13px;font-weight:700;margin-bottom:7px;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;
+    padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .chip:hover:not(.active){border-color:var(--accent);}
+  .chip.active{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%);
+    border-color:transparent;color:#fff;}
+  .opinion-label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;}
+  #opinion{min-height:64px;background:var(--card);}
+
   /* ---------- Result panel ---------- */
   .result-panel{min-height:560px;display:flex;flex-direction:column;}
   .result-head{justify-content:space-between;align-items:flex-start;}
@@ -201,7 +240,25 @@
           <h2>콘텐츠 설정</h2>
           <p>어떤 콘텐츠를 만들고 싶으신가요? 아래 항목을 입력하고 AI에게 맡겨보세요.</p>
         </div>
+        <button type="button" class="head-btn" id="channelBtn" aria-expanded="false" aria-controls="channelBox">⚙ 채널 설정</button>
       </div>
+
+      <form class="channel-box" id="channelBox" autocomplete="off">
+        <h3>⚙ 내 채널 기본 관점</h3>
+        <p>한 번 저장하면 관점 질문과 모든 원고에 반영돼요. 관점 질문에 답하지 않은 부분은 이 설정을 따라요.</p>
+        <label for="channel-intro">채널 소개</label>
+        <input type="text" id="channel-intro" maxlength="150" placeholder="예: IT 뉴스를 쉽게 풀어 주는 채널">
+        <label for="channel-audience">주 시청자·독자</label>
+        <input type="text" id="channel-audience" maxlength="150" placeholder="예: 20~30대 직장인, 비전공자">
+        <label for="channel-view">기본 관점</label>
+        <input type="text" id="channel-view" maxlength="150" placeholder="예: 개발자 시각으로, 과장 없이, 실생활 영향 중심">
+        <label for="channel-avoid">피하고 싶은 것</label>
+        <input type="text" id="channel-avoid" maxlength="150" placeholder="예: 공포 조장, 과한 낚시성 표현">
+        <div class="channel-actions">
+          <button type="button" class="btn-outline" id="channelCancel">닫기</button>
+          <button type="submit" class="btn-accent">저장</button>
+        </div>
+      </form>
 
       <div class="news-source" id="newsSource">
         <div class="news-source-top">
@@ -223,10 +280,30 @@
       </div>
 
       <div class="field">
-        <label for="reference">참고자료 <span class="optional">(선택)</span></label>
-        <textarea id="reference" maxlength="8000" placeholder="기사, 뉴스, 메모 등 참고할 내용을 붙여넣어 주세요.
-여러 내용을 함께 입력해도 좋습니다."></textarea>
-        <div class="counter"><span id="refCount">0</span>/8000</div>
+        <label for="facts">사실 메모 <span class="optional">(선택)</span></label>
+        <textarea id="facts" maxlength="3000" placeholder="확인한 사실을 짧게 적어 주세요. 기사 문장을 그대로 붙여넣지 않아도 돼요.
+예: 뉴빌리티가 로봇 '빌리' 공개 / 바퀴 방식 / 15kg 리프트, 60kg 적재 / 연내 PoC 예정"></textarea>
+        <div class="counter"><span id="factsCount">0</span>/3000</div>
+        <div class="field-note" id="factsNote">💡 원문을 보고 중요한 숫자나 사실을 한두 줄 더 적으면 원고가 풍부해져요.</div>
+      </div>
+
+      <div class="field">
+        <label for="primarySources">1차 출처 <span class="optional">(선택 · 한 줄에 하나, 최대 3개)</span></label>
+        <textarea id="primarySources" rows="2" maxlength="1500" placeholder="보도자료, 공식 블로그, 발표 자료 등의 링크 (원고 끝 참고자료에 들어가요)"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label>💬 관점 질문 <span class="optional">(선택)</span></label>
+          <button type="button" class="mini-btn" id="questionsBtn">💬 관점 질문 만들기</button>
+        </div>
+        <div class="perspective-box">
+          <div class="q-status" id="questionsStatus">주제를 정하고 버튼을 누르면 AI가 관점 질문을 만들어 드려요. 답하지 않아도 원고는 만들어져요.</div>
+          <div id="questionList"></div>
+          <label class="opinion-label" for="opinion">✏️ 기타 의견 <span class="optional">(선택)</span></label>
+          <textarea id="opinion" maxlength="500" placeholder="직접 쓰고 싶은 생각이나 경험이 있으면 적어 주세요.
+예: 물류 알바 해봤는데 박스 옮기는 게 제일 힘들었음"></textarea>
+        </div>
       </div>
 
       <div class="field">
@@ -335,13 +412,24 @@
   }
 
   const topicInput = document.getElementById("topic");
-  const refInput = document.getElementById("reference");
+  const factsInput = document.getElementById("facts");
+  const factsNote = document.getElementById("factsNote");
+  const primaryInput = document.getElementById("primarySources");
+  const opinionInput = document.getElementById("opinion");
+
+  // 사실 메모가 길어지면 기사 전문을 붙여넣은 것일 수 있으니 짧게 쓰도록 안내한다.
+  const FACTS_WARN_CHARS = 1500;
   function updateCounts(){
     document.getElementById("topicCount").textContent = topicInput.value.length;
-    document.getElementById("refCount").textContent = refInput.value.length;
+    document.getElementById("factsCount").textContent = factsInput.value.length;
+    const tooLong = factsInput.value.length > FACTS_WARN_CHARS;
+    factsNote.classList.toggle("warn", tooLong);
+    factsNote.textContent = tooLong
+      ? "⚠ 기사 문장을 길게 붙여넣으면 원고가 기사를 닮게 돼요. 핵심 사실만 짧게 적어 주세요."
+      : "💡 원문을 보고 중요한 숫자나 사실을 한두 줄 더 적으면 원고가 풍부해져요.";
   }
   topicInput.addEventListener("input", updateCounts);
-  refInput.addEventListener("input", updateCounts);
+  factsInput.addEventListener("input", updateCounts);
 
   function setActive(groupId, value){
     const btn = document.querySelector(`#${groupId} .opt-btn[data-value="${value}"]`);
@@ -351,7 +439,7 @@
   }
 
   // ---------- 접근 코드 (운영자 전용) ----------
-  // 원고 생성·원문 가져오기 API는 서버의 ACCESS_CODE와 같은 코드를 보내야 동작한다.
+  // 원고 생성·관점 질문 API는 서버의 ACCESS_CODE와 같은 코드를 보내야 동작한다.
   // 서버가 코드를 요구하면(ACCESS_REQUIRED) 입력창을 띄우고, 입력한 코드는 이 브라우저에 기억한다.
   const ACCESS_STORAGE_KEY = "writeflow_access_code";
   const accessBox = document.getElementById("accessBox");
@@ -406,11 +494,138 @@
     if(retry) retry();
   });
 
+  // ---------- 채널 설정: 내 채널 기본 관점 (이 브라우저에 저장) ----------
+  const CHANNEL_STORAGE_KEY = "writeflow_channel";
+  const CHANNEL_KEYS = ["intro", "audience", "view", "avoid"];
+  const channelBtn = document.getElementById("channelBtn");
+  const channelBox = document.getElementById("channelBox");
+  let channel = {};
+  try{ channel = JSON.parse(localStorage.getItem(CHANNEL_STORAGE_KEY) || "{}") || {}; }catch(e){ channel = {}; }
+
+  function updateChannelBtn(){
+    const isSet = CHANNEL_KEYS.some(k => channel[k]);
+    channelBtn.textContent = isSet ? "⚙ 채널 설정 ✓" : "⚙ 채널 설정";
+    channelBtn.classList.toggle("set", isSet);
+  }
+
+  function toggleChannelBox(open){
+    channelBox.classList.toggle("open", open);
+    channelBtn.setAttribute("aria-expanded", String(open));
+    if(open){
+      CHANNEL_KEYS.forEach(k => { document.getElementById("channel-" + k).value = channel[k] || ""; });
+      document.getElementById("channel-intro").focus();
+    }
+  }
+
+  channelBtn.addEventListener("click", () => toggleChannelBox(!channelBox.classList.contains("open")));
+  document.getElementById("channelCancel").addEventListener("click", () => toggleChannelBox(false));
+  channelBox.addEventListener("submit", (e) => {
+    e.preventDefault();
+    channel = {};
+    CHANNEL_KEYS.forEach(k => { channel[k] = document.getElementById("channel-" + k).value.trim(); });
+    try{ localStorage.setItem(CHANNEL_STORAGE_KEY, JSON.stringify(channel)); }catch(e){ /* 저장소를 못 쓰면 이번 방문 동안만 기억한다 */ }
+    updateChannelBtn();
+    toggleChannelBox(false);
+  });
+  updateChannelBtn();
+
+  // ---------- 관점 질문: 평가 · 강조점 · 전망 3개 질문과 보기를 AI가 만든다 ----------
+  const questionsBtn = document.getElementById("questionsBtn");
+  const questionsStatus = document.getElementById("questionsStatus");
+  const questionList = document.getElementById("questionList");
+  const QUESTIONS_INTRO = "주제를 정하고 버튼을 누르면 AI가 관점 질문을 만들어 드려요. 답하지 않아도 원고는 만들어져요.";
+  let questions = [];   // [{ question, options, selected }]
+  let questionsRequest = 0;
+
+  function setQuestionsStatus(text, kind){
+    questionsStatus.textContent = text;
+    questionsStatus.className = "q-status" + (kind ? " " + kind : "");
+    questionsStatus.style.display = text ? "block" : "none";
+  }
+
+  function renderQuestions(){
+    questionList.replaceChildren(...questions.map((q, qi) => {
+      const item = document.createElement("div");
+      item.className = "q-item";
+      const text = document.createElement("div");
+      text.className = "q-text";
+      text.textContent = `Q${qi + 1}. ${q.question}`;
+      const row = document.createElement("div");
+      row.className = "chip-row";
+      q.options.forEach(option => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip" + (q.selected === option ? " active" : "");
+        chip.setAttribute("aria-pressed", String(q.selected === option));
+        chip.textContent = option;
+        // 같은 보기를 다시 누르면 선택을 해제한다.
+        chip.addEventListener("click", () => {
+          q.selected = q.selected === option ? "" : option;
+          renderQuestions();
+        });
+        row.appendChild(chip);
+      });
+      item.append(text, row);
+      return item;
+    }));
+    questionsBtn.textContent = questions.length ? "↻ 다시 만들기" : "💬 관점 질문 만들기";
+  }
+
+  function resetQuestions(){
+    questionsRequest++;
+    questions = [];
+    questionsBtn.disabled = false;
+    renderQuestions();
+    setQuestionsStatus(QUESTIONS_INTRO);
+  }
+
+  async function generateQuestions(){
+    if(!topicInput.value.trim()){
+      setQuestionsStatus("주제를 먼저 입력해 주세요.", "warn");
+      topicInput.focus();
+      return;
+    }
+    const requestId = ++questionsRequest;
+    questionsBtn.disabled = true;
+    setQuestionsStatus("⏳ 관점 질문을 만드는 중이에요…");
+
+    let data;
+    try{
+      const res = await apiFetch("/api/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: topicInput.value, facts: factsInput.value, channel }),
+      });
+      data = await res.json();
+    }catch(err){
+      data = { ok:false, error:"WriteFlow 서버에 연결하지 못했어요." };
+    }
+    // 그사이 다시 요청했거나 초기화했다면 이 응답은 버린다.
+    if(requestId !== questionsRequest) return;
+    questionsBtn.disabled = false;
+
+    if(data.code === "ACCESS_REQUIRED"){
+      setQuestionsStatus("🔒 관점 질문은 운영자만 만들 수 있어요. '원고 생성하기' 버튼 아래에 접근 코드를 입력하면 이어서 만들어요.", "warn");
+      requestAccess(generateQuestions);
+      return;
+    }
+    if(!data.ok){
+      setQuestionsStatus("⚠ " + (data.error || "관점 질문을 만들지 못했어요."), "warn");
+      return;
+    }
+    questions = data.questions.map(q => ({ ...q, selected: "" }));
+    renderQuestions();
+    setQuestionsStatus("");
+  }
+
+  questionsBtn.addEventListener("click", generateQuestions);
+
   // ---------- MyNews 연동: 뉴스 카드의 "AI 원고생성"으로 열리면 콘텐츠 설정을 자동으로 채운다 ----------
   // MyNews가 URL 해시(#from=mynews&title=...&link=...)에 뉴스 정보를 담아 보낸다.
-  // 원문 링크는 서버의 /api/article로 본문을 가져와 참고자료에 넣는다.
+  // 기사 본문은 가져오지 않는다. 카드 요약을 사실 메모에 넣고, 기사 정보는 원고 끝 참고자료에만 쓴다.
   const newsSource = document.getElementById("newsSource");
   const newsStatus = document.getElementById("newsSourceStatus");
+  let loadedNews = null;
 
   function setNewsStatus(text, kind){
     newsStatus.textContent = text;
@@ -422,16 +637,7 @@
     return isNaN(d) ? "" : d.toLocaleDateString("ko-KR", { year:"numeric", month:"2-digit", day:"2-digit" });
   }
 
-  function buildNewsReference(news, bodyLabel, body){
-    const lines = [];
-    lines.push(`[출처] ${[news.source, formatNewsDate(news.date), news.link].filter(Boolean).join(" · ")}`);
-    if(news.category) lines.push(`[분야] ${news.category}`);
-    if(news.keywords.length) lines.push(`[키워드] ${news.keywords.map(k => "#" + k).join(" ")}`);
-    if(body) lines.push("", `[${bodyLabel}]`, body);
-    return lines.join("\n").slice(0, refInput.maxLength);
-  }
-
-  async function loadNewsFromHash(){
+  function loadNewsFromHash(){
     const params = new URLSearchParams(location.hash.slice(1));
     if(params.get("from") !== "mynews") return;
 
@@ -441,8 +647,6 @@
       link: params.get("link") || "",
       source: params.get("source") || "",
       date: params.get("date") || "",
-      category: params.get("category") || "",
-      keywords: (params.get("keywords") || "").split(",").map(k => k.trim()).filter(Boolean),
     };
     // 새로고침해도 사용자가 고친 내용을 덮어쓰지 않도록 해시를 지운다.
     history.replaceState(null, "", location.pathname + location.search);
@@ -455,56 +659,28 @@
     linkEl.style.display = news.link ? "" : "none";
     newsSource.style.display = "block";
 
+    loadedNews = { title: news.title, source: news.source, date: formatNewsDate(news.date), link: news.link };
     topicInput.value = news.title.slice(0, topicInput.maxLength);
-    const summaryRef = buildNewsReference(news, "카드 요약", news.summary);
-    refInput.value = summaryRef;
+    factsInput.value = news.summary.slice(0, factsInput.maxLength);
     setActive("styleGroup", "정보 전달형");
     updateCounts();
 
-    if(!news.link){
-      setNewsStatus("원문 링크가 없어 카드 요약만 참고자료에 넣었어요.", "warn");
-      return;
-    }
+    setNewsStatus(news.summary
+      ? "✓ 카드 요약을 사실 메모에 넣었어요. 기사 본문은 가져오지 않으니, 원문을 읽고 중요한 사실을 덧붙여 주세요."
+      : "카드 요약이 없어요. '원문 보기'로 기사를 읽고 사실 메모에 핵심 사실을 적어 주세요.",
+      news.summary ? "ok" : "warn");
 
-    fetchNewsArticle(news, summaryRef);
-  }
-
-  async function fetchNewsArticle(news, summaryRef){
-    setNewsStatus("⏳ 원문 기사를 불러오는 중이에요…");
-    let article = null, error = "";
-    try{
-      const res = await apiFetch(`/api/article?url=${encodeURIComponent(news.link)}`);
-      const data = await res.json();
-      if(data.ok) article = data;
-      else if(data.code === "ACCESS_REQUIRED"){
-        setNewsStatus("🔒 원문 기사 불러오기는 운영자만 쓸 수 있어요. 아래에 접근 코드를 입력하면 이어서 불러와요. (지금은 카드 요약만 들어가 있어요)", "warn");
-        requestAccess(() => fetchNewsArticle(news, summaryRef));
-        return;
-      }
-      else error = data.error || "";
-    }catch(err){
-      error = "원문을 가져오는 서버에 연결하지 못했어요.";
-    }
-
-    // 불러오는 사이에 사용자가 참고자료를 고쳤다면 덮어쓰지 않는다.
-    if(refInput.value !== summaryRef){
-      setNewsStatus(article ? "원문을 불러왔지만, 직접 수정한 참고자료를 그대로 두었어요." : "", "warn");
-      return;
-    }
-
-    if(article){
-      refInput.value = buildNewsReference(news, "기사 본문", article.text);
-      updateCounts();
-      setNewsStatus(`✓ 원문 기사 본문 ${article.length.toLocaleString()}자를 참고자료에 넣었어요. 필요 없는 부분은 지워도 돼요.`, "ok");
-    }else{
-      setNewsStatus(`⚠ ${error || "원문을 불러오지 못했어요."} 카드 요약만 넣었으니, '원문 보기'에서 본문을 복사해 붙여넣으면 더 좋은 원고가 나와요.`, "warn");
-    }
+    // MyNews에서 원고를 쓰려고 넘어온 것이니 관점 질문은 바로 만든다.
+    generateQuestions();
   }
 
   document.getElementById("newsSourceClear").addEventListener("click", () => {
     newsSource.style.display = "none";
+    loadedNews = null;
     topicInput.value = "";
-    refInput.value = "";
+    factsInput.value = "";
+    opinionInput.value = "";
+    resetQuestions();
     updateCounts();
   });
 
@@ -554,7 +730,17 @@
       const res = await apiFetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: topicInput.value, reference: refInput.value, type, style, length }),
+        body: JSON.stringify({
+          topic: topicInput.value,
+          facts: factsInput.value,
+          type, style, length,
+          perspective: {
+            answers: questions.filter(q => q.selected).map(q => ({ question: q.question, answer: q.selected })),
+            opinion: opinionInput.value,
+          },
+          channel,
+          sources: { news: loadedNews, primary: primaryInput.value.split(/\s+/).filter(Boolean) },
+        }),
       });
       data = await res.json();
     }catch(err){
@@ -582,7 +768,7 @@
     // AI 응답은 HTML이 아닌 텍스트로 넣는다.
     const badge = document.createElement("div");
     badge.className = "result-badge";
-    badge.textContent = `${type} 원고 · ${style} · ${length}`;
+    badge.textContent = [`${type} 원고`, style, length, data.structure && `전개: ${data.structure}`].filter(Boolean).join(" · ");
     resultContent.replaceChildren(badge, document.createTextNode(currentDraft));
     if(data.truncated){
       const warn = document.createElement("div");
